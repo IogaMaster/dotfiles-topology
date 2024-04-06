@@ -1,0 +1,17 @@
+name: "Generate Topology Diagram"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+    - run: nix build github:IogaMaster/dotfiles#topology.config.output
+    - run: cp result/main.svg ./topology.svg && ln -sf result/ && rm -rf result/
+    - uses: EndBug/add-and-commit@v9
+      with:
+        default_author: github_actions
+        message: "Update topology.svg"
